@@ -28,7 +28,7 @@ public class MeshToVBO implements MeshInterface {
 
     private PApplet parent;
     static int meshCount = 0;
-    private final String VERSION = "0.1.1";
+    private final String VERSION = "0.1.2";
     private final String HEMESH_VERSION = "hemesh_b1_7agx3";
     private final String VERSION_FORMAT = "INFO: MeshToVBO version %s, for "
             + "hemesh version %s";
@@ -84,9 +84,8 @@ public class MeshToVBO implements MeshInterface {
             retained.shininess(180f);
             retained.specular(70f);
         }
-        Iterator<HE_Face> faceItr = mesh.fItr();
         HE_Face f;
-        while (faceItr.hasNext()) {
+        for (Iterator<HE_Face> faceItr = mesh.fItr(); faceItr.hasNext();) {
             f = faceItr.next();
             HE_Halfedge he = f.getHalfedge();
             HE_Vertex vx;
