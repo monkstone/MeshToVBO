@@ -28,9 +28,9 @@ public class MeshToVBO implements MeshInterface {
 
     private PApplet parent;
     static int meshCount = 0;
-    private final String VERSION = "0.1.2";
-    private final String HEMESH_VERSION = "hemesh_b1_7agx3";
-    private final String VERSION_FORMAT = "INFO: MeshToVBO version %s, for "
+    private final String VERSION = "0.1.3";
+    private final String HEMESH_VERSION = "svn 109";
+    private final String VERSION_FORMAT = "Info: MeshToVBO version %s, for "
             + "hemesh version %s";
 
     /**
@@ -91,10 +91,10 @@ public class MeshToVBO implements MeshInterface {
             HE_Vertex vx;
             do {
                 vx = he.getVertex();
-                WB_Normal3d vn = vx.getVertexNormal();
+                WB_Normal3d vn = vx.getNormal();
                 retained.normal(vn.xf(), vn.yf(), vn.zf());
                 retained.vertex(vx.xf(), vx.yf(), vx.zf());
-                he = he.getNextInFace();
+                he = he.getNextInLoop();
             } while (he != f.getHalfedge());
         }
         retained.end();

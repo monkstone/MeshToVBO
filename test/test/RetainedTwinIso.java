@@ -1,6 +1,7 @@
+package test;
 
-import mshape.MeshInterface;
-import mshape.MeshToVBO;
+import mshape.*;
+import mshape.util.*;
 import processing.core.*;
 import wblut.hemesh.core.*;
 import wblut.hemesh.creators.*;
@@ -19,7 +20,7 @@ public class RetainedTwinIso extends PApplet {
     HE_Mesh invMesh;
     int res;
     MeshInterface converter;
-   // ArcBall arcball;
+    ArcBall arcball;
 
     /**
      *
@@ -27,11 +28,11 @@ public class RetainedTwinIso extends PApplet {
     @Override
     public void setup() {
         size(800, 800, P3D);
-       // arcball = new ArcBall(this);
-        smooth(16);
+        arcball = new ArcBall(this);
+        smooth(8);
         converter = new MeshToVBO(this);
        // union = createShape(PShape.GROUP);
-        res = 10;
+        res = 20;
         float[][][] values = new float[res + 1][res + 1][res + 1];
         for (int i = 0; i < res + 1; i++) {
             for (int j = 0; j < res + 1; j++) {
@@ -76,9 +77,7 @@ public class RetainedTwinIso extends PApplet {
         directionalLight(80, 80, 80, 0, 0, -1);
         ambientLight(50, 50, 50);
         translate(400, 400, 0);
-        rotateX(mouseY * 0.05f);
-        rotateY(mouseY * 0.05f);
-    //    arcball.update();
+        arcball.update();
         shape(retainedMesh);
         shape(retainedInverse);       
     }
@@ -87,6 +86,7 @@ public class RetainedTwinIso extends PApplet {
      *
      * @return
      */
+    @Override
     public int sketchWidth() {
         return 800;
     }
@@ -95,6 +95,7 @@ public class RetainedTwinIso extends PApplet {
      *
      * @return
      */
+    @Override
     public int sketchHeight() {
         return 800;
     }
@@ -103,8 +104,9 @@ public class RetainedTwinIso extends PApplet {
      *
      * @return
      */
+    @Override
     public String sketchRenderer() {
-        return OPENGL;
+        return P3D;
     }
 
     /**
@@ -112,6 +114,6 @@ public class RetainedTwinIso extends PApplet {
      * @param args
      */
     static public void main(String args[]) {
-        PApplet.main(new String[]{"--bgcolor=#666666", "--stop-color=#cccccc", "RetainedTwinIso"});
+        PApplet.main(new String[]{"test.RetainedTwinIso"});
     }
 }

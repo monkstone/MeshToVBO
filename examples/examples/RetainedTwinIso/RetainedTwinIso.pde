@@ -1,4 +1,5 @@
 import mshape.*;
+import mshape.util.*;
 import wblut.hemesh.core.*;
 import wblut.hemesh.creators.*;
 import wblut.hemesh.modifiers.*;
