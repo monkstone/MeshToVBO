@@ -78,7 +78,6 @@ public class MeshToVBO implements MeshInterface {
         PShape retained = parent.createShape(PApplet.TRIANGLES);
         retained.enableStyle();
         retained.fill(red, green, blue, alpha);
-        retained.solid(true);
         retained.ambient(50);
         if (meshCount == 0) {
             retained.shininess(180f);
