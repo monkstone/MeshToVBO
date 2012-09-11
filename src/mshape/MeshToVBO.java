@@ -28,8 +28,8 @@ public class MeshToVBO implements MeshInterface {
 
     private PApplet parent;
     static int meshCount = 0;
-    private final String VERSION = "0.1.3";
-    private final String HEMESH_VERSION = "svn 109";
+    static String VERSION = "0.1.4";
+    static String HEMESH_VERSION = "svn 109";
     private final String VERSION_FORMAT = "Info: MeshToVBO version %s, for "
             + "hemesh version %s";
 
@@ -39,7 +39,7 @@ public class MeshToVBO implements MeshInterface {
      */
     public MeshToVBO(PApplet parent) {
         this.parent = parent;
-        this.parent.registerDispose(this);
+        this.parent.registerMethod("dispose", this);
         System.out.println(String.format(VERSION_FORMAT, VERSION, HEMESH_VERSION));
     }
 

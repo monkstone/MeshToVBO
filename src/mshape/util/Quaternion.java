@@ -20,13 +20,11 @@
 
 package mshape.util;
 
-
-import processing.core.PVector;
 /**
  * 
  * @author Martin Prout
  */
-public class Quaternion {
+public final class Quaternion {
 
     private float w, x, y, z;
 
@@ -63,10 +61,10 @@ public class Quaternion {
 
     /**
      * 
-     * @param w
-     * @param v
+     * @param w scalar 
+     * @param v custom Vector class
      */
-    public void set(float w, PVector v) {
+    public void set(float w, AVector v) {
         this.w = w;
         x = v.x;
         y = v.y;
@@ -91,12 +89,11 @@ public class Quaternion {
      * @return
      */
     public static Quaternion mult(Quaternion q1, Quaternion q2) {
-        Quaternion res = new Quaternion();
-        res.w = q1.w * q2.w - q1.x * q2.x - q1.y * q2.y - q1.z * q2.z;
-        res.x = q1.w * q2.x + q1.x * q2.w + q1.y * q2.z - q1.z * q2.y;
-        res.y = q1.w * q2.y + q1.y * q2.w + q1.z * q2.x - q1.x * q2.z;
-        res.z = q1.w * q2.z + q1.z * q2.w + q1.x * q2.y - q1.y * q2.x;
-        return res;
+        float w = q1.w * q2.w - q1.x * q2.x - q1.y * q2.y - q1.z * q2.z;
+        float x = q1.w * q2.x + q1.x * q2.w + q1.y * q2.z - q1.z * q2.y;
+        float y = q1.w * q2.y + q1.y * q2.w + q1.z * q2.x - q1.x * q2.z;
+        float z = q1.w * q2.z + q1.z * q2.w + q1.x * q2.y - q1.y * q2.x;
+        return new Quaternion(w, x, y, z);
     }
     
     /**
@@ -105,8 +102,7 @@ public class Quaternion {
      * @return a new float[] where a0 = angle and a1 .. a3 are axis vector
      */
 
-    public float[] getValue() {        
-
+    public float[] getValue() {
         float sa = (float) Math.sqrt(1.0 - w * w);
         if (sa < processing.core.PConstants.EPSILON) {
             sa = 1.0f;

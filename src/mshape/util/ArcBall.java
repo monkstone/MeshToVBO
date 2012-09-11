@@ -1,5 +1,5 @@
 /**
- * The purpose of this library is to allow users to explore lystems using
+ * The purpose of this library is to allow users to display Hemesh meshes as VBO
  * processing sketches Copyright (C) 2012 Martin Prout This library is free
  * software; you can redistribute it and/or modify it under the terms of the GNU
  * Lesser General Public License as published by the Free Software Foundation;
@@ -18,18 +18,17 @@
  *
  * 3) ArcBall concept invented by Ken Shoemake, published in his 1985 SIGGRAPH paper "Animating rotations with quaternion curves". 
  * 
- * 4) Modified to use PVector & enum (Constrain) instead of Vec3D & int by Martin Prout
+ * 4) Modified to use AVector & enum (Constrain) instead of Vec3D & int by Martin Prout
  **/
 
 
 package mshape.util;
 
-import java.awt.event.KeyEvent;
-import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import processing.core.PApplet;
-import processing.core.PVector;
+import processing.event.KeyEvent;
+import processing.event.MouseEvent;
 
 /**
  * Supports the ArcBall and MouseWheel zoom
@@ -42,12 +41,12 @@ public class ArcBall {
     private float center_x;
     private float center_y;
     private float radius;
-    private PVector v_down;
-    private PVector v_drag;
+    private AVector v_down;
+    private AVector v_drag;
     private Quaternion q_now;
     private Quaternion q_down;
     private Quaternion q_drag;
-    private PVector[] axisSet;
+    private AVector[] axisSet;
     private Constrain axis;
     private boolean isActive = false;
     private final PApplet parent;
@@ -69,16 +68,16 @@ public class ArcBall {
      */
     public ArcBall(final PApplet parent, float center_x, float center_y, float radius) {
         this.parent = parent;
-        this.parent.registerDispose(this);
+        this.parent.registerMethod("dispose", this);
         this.center_x = center_x;
         this.center_y = center_y;
         this.radius = radius;
-        this.v_down = new PVector();
-        this.v_drag = new PVector();
+        this.v_down = new AVector();
+        this.v_drag = new AVector();
         this.q_now = new Quaternion();
         this.q_down = new Quaternion();
         this.q_drag = new Quaternion();
-        this.axisSet = new PVector[]{new PVector(1.0F, 0.0F, 0.0F), new PVector(0.0F, 1.0F, 0.0F), new PVector(0.0F, 0.0F, 1.0F)};
+        this.axisSet = new AVector[]{new AVector(1.0F, 0.0F, 0.0F), new AVector(0.0F, 1.0F, 0.0F), new AVector(0.0F, 0.0F, 1.0F)};
         axis = Constrain.FREE; // no constraints...
         setActive(true);
     }
@@ -100,15 +99,15 @@ public class ArcBall {
     public void mouseEvent(MouseEvent e) {
         int x = e.getX();
         int y = e.getY();
-        switch (e.getID()) {
-            case (MouseEvent.MOUSE_PRESSED):
+        switch (e.getAction()) {
+            case (MouseEvent.PRESSED):
                 v_down = mouse2sphere(x, y);
                 q_down.set(q_now);
                 q_drag.reset();
                 break;
-            case (MouseEvent.MOUSE_DRAGGED):
+            case (MouseEvent.DRAGGED):
                 v_drag = mouse2sphere(x, y);
-                q_drag.set(PVector.dot(v_down, v_drag), v_down.cross(v_drag));
+                q_drag.set(AVector.dot(v_down, v_drag), v_down.cross(v_drag));
                 break;
             default:
         }
@@ -120,8 +119,8 @@ public class ArcBall {
      * @param e
      */
     public void keyEvent(KeyEvent e) {
-        if (e.getID() == KeyEvent.KEY_PRESSED) {
-            switch (e.getKeyChar()) {
+        if (e.getAction() == KeyEvent.PRESSED) {
+            switch (e.getKey()) {
                 case 'x':
                     constrain(Constrain.XAXIS);
                     break;
@@ -133,7 +132,7 @@ public class ArcBall {
                     break;
             }
         }
-        if (e.getID() == KeyEvent.KEY_RELEASED) {
+        if (e.getAction() == KeyEvent.RELEASED) {
             constrain(Constrain.FREE);
         }
     }
@@ -144,6 +143,7 @@ public class ArcBall {
      */
     protected class ArcballMousewheelListener implements MouseWheelListener {
 
+        @Override
         public void mouseWheelMoved(final MouseWheelEvent e) {
             if (zoomWheelHandler != null) {
                 zoomWheelHandler.handleWheel(e.getWheelRotation());
@@ -160,12 +160,12 @@ public class ArcBall {
         if (active != isActive) {
             isActive = active;
             if (active) {
-                this.parent.registerMouseEvent(this);
-                this.parent.registerKeyEvent(this);
+                this.parent.registerMethod("mouseEvent", this);
+                this.parent.registerMethod("keyEvent", this);
                 this.parent.addMouseWheelListener(wheelHandler);
             } else {
-                this.parent.unregisterMouseEvent(this);
-                this.parent.unregisterKeyEvent(this);
+                this.parent.unregisterMethod("mouseEvent", this);
+                this.parent.unregisterMethod("keyEvent", this);
                 this.parent.frame.removeMouseWheelListener(wheelHandler);
             }
         }
@@ -186,8 +186,8 @@ public class ArcBall {
      * @param y
      * @return
      */
-    public PVector mouse2sphere(float x, float y) {
-        PVector v = new PVector();
+    public AVector mouse2sphere(float x, float y) {
+        AVector v = new AVector();
         v.x = (x - center_x) / radius;
         v.y = (y - center_y) / radius;
         float mag = v.x * v.x + v.y * v.y;
@@ -205,8 +205,8 @@ public class ArcBall {
      * @param axis
      * @return
      */
-    public PVector constrainVector(PVector vector, PVector axis) {
-        PVector res = PVector.sub(vector, PVector.mult(axis, PVector.dot(axis, vector)));
+    public AVector constrainVector(AVector vector, AVector axis) {
+        AVector res = AVector.sub(vector, AVector.mult(axis, AVector.dot(axis, vector)));
         res.normalize();
         return res;
     }
