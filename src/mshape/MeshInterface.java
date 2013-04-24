@@ -10,7 +10,8 @@
 package mshape;
 
 import processing.core.PShape;
-import wblut.hemesh.core.HE_Mesh;
+import wblut.hemesh.HE_Mesh;
+
 
 /**
  *
@@ -33,21 +34,10 @@ public interface MeshInterface {
      * @param blue
      * @return retained PShape with style enabled and hue set
      */
-    PShape meshToRetained(HE_Mesh mesh, float red, float green, float blue);
+    PShape meshToRetained(HE_Mesh mesh, int col);
 
-    /**
-     * The availability and use of iterators in the library, was kindly
-     * explained to me by Frederick Vanhoutte (author of Hemesh library)
-     *
-     * @todo change getNextInFace() to getNextInLoop() in future version
-     * @param mesh
-     * @param red
-     * @param green
-     * @param blue
-     * @param alpha
-     * @return retained PShape with style enabled and hue set
-     */
-    PShape meshToRetained(HE_Mesh mesh, float red, float green, float blue, float alpha);
+
+
 
     /**
      *

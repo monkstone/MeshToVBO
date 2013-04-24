@@ -1,11 +1,20 @@
+/**
+ * The purpose of this library is to allow users to display Hemesh meshes as VBO
+ * processing sketches Copyright (C) 2012 Martin Prout This library is free
+ * software; you can redistribute it and/or modify it under the terms of the GNU
+ * Lesser General Public License as published by the Free Software Foundation;
+ * either version 2.1 of the License, or (at your option) any later version.
+ *
+ * Obtain a copy of the license at http://www.gnu.org/licenses/lgpl-2.1.html
+ */
 package test;
 
 import mshape.*;
 import mshape.util.*;
 import processing.core.*;
-import wblut.hemesh.core.*;
-import wblut.hemesh.creators.*;
-import wblut.hemesh.modifiers.*;
+import wblut.hemesh.HEC_IsoSurface;
+import wblut.hemesh.HEM_Smooth;
+import wblut.hemesh.HE_Mesh;
 
 /**
  *
@@ -13,9 +22,9 @@ import wblut.hemesh.modifiers.*;
  */
 public class RetainedTwinIso extends PApplet {
 
+    private static final long serialVersionUID = 1735630995336704713L;
     PShape retainedMesh;
     PShape retainedInverse;
-   // PShape union;
     HE_Mesh mesh;
     HE_Mesh invMesh;
     int res;
@@ -31,7 +40,6 @@ public class RetainedTwinIso extends PApplet {
         arcball = new ArcBall(this);
         smooth(8);
         converter = new MeshToVBO(this);
-       // union = createShape(PShape.GROUP);
         res = 20;
         float[][][] values = new float[res + 1][res + 1][res + 1];
         for (int i = 0; i < res + 1; i++) {
@@ -60,9 +68,9 @@ public class RetainedTwinIso extends PApplet {
         invMesh.modify(new HEM_Smooth().setIterations(10).setAutoRescale(true));
         noStroke();
         //silver
-        retainedMesh = converter.meshToRetained(mesh, 192, 192, 192);
+        retainedMesh = converter.meshToRetained(mesh, color(192, 192, 192));
         //white marble
-        retainedInverse = converter.meshToRetained(invMesh, 249, 246, 224);
+        retainedInverse = converter.meshToRetained(invMesh, color(249, 246, 224));
 
     }
 
@@ -73,13 +81,13 @@ public class RetainedTwinIso extends PApplet {
     public void draw() {
         background(0);
         lights();
-        lightSpecular(80, 80, 80);
-        directionalLight(80, 80, 80, 0, 0, -1);
-        ambientLight(50, 50, 50);
+        lightSpecular(80f, 80f, 80f);
+        directionalLight(80f, 80f, 80f, 0, 0, -1);
+        ambientLight(50f, 50f, 50f);
         translate(400, 400, 0);
         arcball.update();
         shape(retainedMesh);
-        shape(retainedInverse);       
+        shape(retainedInverse);
     }
 
     /**

@@ -1,7 +1,7 @@
 /**
  *
  * The purpose of this library is to allow the rendering of Hemesh mesh object
- * as VBOs Copyright (C) 2012 Martin Prout This library is free software; you
+ * as VBOs Copyright (C) 2013 Martin Prout This library is free software; you
  * can redistribute it and/or modify it under the terms of the GNU Lesser
  * General Public License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
@@ -12,12 +12,14 @@ package mshape;
 
 import java.util.Iterator;
 import processing.core.PApplet;
+import processing.core.PConstants;
 import processing.core.PShape;
-import wblut.geom.core.WB_Normal3d;
-import wblut.hemesh.core.HE_Face;
-import wblut.hemesh.core.HE_Halfedge;
-import wblut.hemesh.core.HE_Mesh;
-import wblut.hemesh.core.HE_Vertex;
+import wblut.geom.WB_Normal3d;
+import wblut.hemesh.HE_Face;
+import wblut.hemesh.HE_Halfedge;
+import wblut.hemesh.HE_Mesh;
+import wblut.hemesh.HE_Vertex;
+
 
 /**
  * Arbitrarily, the first object created is shiny, and thereafter matt
@@ -28,8 +30,8 @@ public class MeshToVBO implements MeshInterface {
 
     private PApplet parent;
     static int meshCount = 0;
-    static String VERSION = "0.1.4";
-    static String HEMESH_VERSION = "svn 109";
+    static String VERSION = "0.1.5";
+    static String HEMESH_VERSION = "1.8.1";
     private final String VERSION_FORMAT = "Info: MeshToVBO version %s, for "
             + "hemesh version %s";
 
@@ -43,20 +45,7 @@ public class MeshToVBO implements MeshInterface {
         System.out.println(String.format(VERSION_FORMAT, VERSION, HEMESH_VERSION));
     }
 
-    /**
-     * No alpha version, rather than repeat code I choose call alpha version
-     * with alpha set to 255
-     *
-     * @param mesh
-     * @param red
-     * @param green
-     * @param blue
-     * @return retained PShape with style enabled and hue set
-     */
-    @Override
-    public final PShape meshToRetained(HE_Mesh mesh, float red, float green, float blue) {
-        return meshToRetained(mesh, red, green, blue, 255f);
-    }
+    
 
     /**
      * The availability and use of iterators in the library, was kindly
@@ -71,13 +60,13 @@ public class MeshToVBO implements MeshInterface {
      * @return retained PShape with style enabled and hue set
      */
     @Override
-    public final PShape meshToRetained(HE_Mesh mesh, float red, float green, float blue, float alpha) {
+    public final PShape meshToRetained(HE_Mesh mesh, int col) {
         meshCount++;
         final HE_Mesh triMesh = mesh.get();
         triMesh.triangulate();
-        PShape retained = parent.createShape(PApplet.TRIANGLES);
-        retained.enableStyle();
-        retained.fill(red, green, blue, alpha);
+        PShape retained = parent.createShape();
+        retained.beginShape(PConstants.TRIANGLES);
+        retained.fill(col);
         retained.ambient(50);
         if (meshCount == 0) {
             retained.shininess(180f);
@@ -90,13 +79,13 @@ public class MeshToVBO implements MeshInterface {
             HE_Vertex vx;
             do {
                 vx = he.getVertex();
-                WB_Normal3d vn = vx.getNormal();
+                WB_Normal3d vn = vx.getVertexNormal();
                 retained.normal(vn.xf(), vn.yf(), vn.zf());
                 retained.vertex(vx.xf(), vx.yf(), vx.zf());
-                he = he.getNextInLoop();
+                he = he.getNextInFace();
             } while (he != f.getHalfedge());
         }
-        retained.end();
+        retained.endShape();
         return retained;
     }
 

@@ -1,15 +1,16 @@
-import mshape.*;
 import mshape.util.*;
-import wblut.hemesh.core.*;
-import wblut.hemesh.creators.*;
-import wblut.hemesh.modifiers.*;
+import mshape.*;
+
+import wblut.hemesh.HEC_IsoSurface;
+import wblut.hemesh.HEM_Smooth;
+import wblut.hemesh.HE_Mesh;
 
 PShape retainedMesh;
 PShape retainedInverse;
 ArcBall arcball;   
 HE_Mesh mesh;
 HE_Mesh invMesh;
-int RES = 32;  // original was 20
+int RES = 20;
 MeshToVBO mshape;
 
 void setup() {
@@ -44,9 +45,9 @@ void setup() {
   invMesh.modify(new HEM_Smooth().setIterations(10).setAutoRescale(true));
   noStroke();
   // silver
-  retainedMesh = mshape.meshToRetained(mesh, 192, 192, 192);
+  retainedMesh = mshape.meshToRetained(mesh, color(192, 192, 192));
   //white marble
-  retainedInverse = mshape.meshToRetained(invMesh, 249, 246, 224);
+  retainedInverse = mshape.meshToRetained(invMesh, color(249, 246, 224));
 }
 
 
