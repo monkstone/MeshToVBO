@@ -12,7 +12,6 @@ package mshape;
 import processing.core.PShape;
 import wblut.hemesh.HE_Mesh;
 
-
 /**
  *
  * @author Martin Prout
@@ -20,29 +19,28 @@ import wblut.hemesh.HE_Mesh;
 public interface MeshInterface {
 
     /**
-     * required for a processing library?
+     * required for a processing library
      */
     void dispose();
 
     /**
-     * No alpha version, rather than repeat code I choose call alpha version
-     * with alpha set to 255
-     *
+     * Directly set color within beginShape/endShape
      * @param mesh
-     * @param red
-     * @param green
-     * @param blue
-     * @return retained PShape with style enabled and hue set
+     * @param col
+     * @return retained PShape with color set as col
      */
     PShape meshToRetained(HE_Mesh mesh, int col);
 
-
-
+    /**
+     * Directly set a default grey color within beginShape/endShape
+     * @param mesh
+     * @return retained PShape with gray color
+     */
+    PShape meshToRetained(HE_Mesh mesh);
 
     /**
-     *
+     * required for a processing library
      * @return
      */
     String version();
-    
 }

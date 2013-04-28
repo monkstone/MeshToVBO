@@ -32,7 +32,7 @@ public class RetainedTwinIso extends PApplet {
     ArcBall arcball;
 
     /**
-     *
+     * Processing setup
      */
     @Override
     public void setup() {
@@ -70,12 +70,13 @@ public class RetainedTwinIso extends PApplet {
         //silver
         retainedMesh = converter.meshToRetained(mesh, color(192, 192, 192));
         //white marble
-        retainedInverse = converter.meshToRetained(invMesh, color(249, 246, 224));
-
+        // retainedInverse = converter.meshToRetained(invMesh, color(249, 246, 224));
+        // default grey colour
+        retainedInverse = converter.meshToRetained(invMesh);
     }
 
     /**
-     *
+     * Processing draw
      */
     @Override
     public void draw() {

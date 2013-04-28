@@ -30,13 +30,13 @@ public class MeshToVBO implements MeshInterface {
 
     private PApplet parent;
     static int meshCount = 0;
-    static String VERSION = "0.1.5";
+    static String VERSION = "0.1.6";
     static String HEMESH_VERSION = "1.8.1";
     private final String VERSION_FORMAT = "Info: MeshToVBO version %s, for "
             + "hemesh version %s";
 
     /**
-     *
+     * Constructor for library class
      * @param parent
      */
     public MeshToVBO(PApplet parent) {
@@ -47,18 +47,7 @@ public class MeshToVBO implements MeshInterface {
 
     
 
-    /**
-     * The availability and use of iterators in the library, was kindly
-     * explained to me by Frederick Vanhoutte (author of Hemesh library)
-     *
-     * @todo change getNextInFace() to getNextInLoop() in future version
-     * @param mesh
-     * @param red
-     * @param green
-     * @param blue
-     * @param alpha
-     * @return retained PShape with style enabled and hue set
-     */
+
     @Override
     public final PShape meshToRetained(HE_Mesh mesh, int col) {
         meshCount++;
@@ -89,18 +78,45 @@ public class MeshToVBO implements MeshInterface {
         return retained;
     }
 
-    /**
-     * required for a processing library?
-     */
+    @Override
+    public final PShape meshToRetained(HE_Mesh mesh) {
+        meshCount++;
+        final HE_Mesh triMesh = mesh.get();
+        triMesh.triangulate();
+        PShape retained = parent.createShape();
+        retained.beginShape(PConstants.TRIANGLES);
+        int col = (255 >> 24) & 0xFF|(211 >> 16) & 0xFF|(211 >> 8) & 0xFF|211;
+        retained.fill(col);
+        retained.ambient(50);
+        if (meshCount == 0) {
+            retained.shininess(180f);
+            retained.specular(70f);
+        }
+        HE_Face f;
+        for (Iterator<HE_Face> faceItr = mesh.fItr(); faceItr.hasNext();) {
+            f = faceItr.next();
+            HE_Halfedge he = f.getHalfedge();
+            HE_Vertex vx;
+            do {
+                vx = he.getVertex();
+                WB_Normal3d vn = vx.getVertexNormal();
+                retained.normal(vn.xf(), vn.yf(), vn.zf());
+                retained.vertex(vx.xf(), vx.yf(), vx.zf());
+                he = he.getNextInFace();
+            } while (he != f.getHalfedge());
+        }
+        retained.endShape();
+        return retained;
+    }
+    
+
+
     @Override
     public void dispose() {
         // nothing to do here
     }
 
-    /**
-     *
-     * @return
-     */
+
     @Override
     public final String version() {
         return VERSION;
