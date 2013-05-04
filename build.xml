@@ -1,16 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="meshtovbo" default="release">
+<project name="meshtovbo" default="library">
 
     <!-- Basic targets -->
   <target name="init">
     <property name="source" value="1.6" />
     <property name="srcdir" value="src" />
     <property name="builddir" value="build" />
-    <property name="distdir" value="dist" />
+    <property name="docsdir" value="reference" />
+    <property name="distdir" value="MeshToVBO" />
+    <property name="libdir" value="MeshToVBO/library" />
     <property name="classpath" value="classpath" />
   </target>
 
-  <target name="clean" depends="init" description="Remove build files created by this script">
+
+<target name="clean" depends="init" description="Remove build files created by this script">
     <delete dir="${builddir}" />
     <delete dir="${distdir}" />
   </target>
@@ -21,19 +24,39 @@
     <javac srcdir="${srcdir}" destdir="${builddir}" source="${source}" target="${source}" includeantruntime="false">
       <compilerarg value="-Xlint:unchecked" />
       <classpath>
-      <pathelement path="classpath"/>
-      <fileset dir="lib">
-        <include name="**/*.jar"/>
-      </fileset>
-    </classpath>
+        <pathelement path="classpath"/>
+        <fileset dir="lib">
+          <include name="**/*.jar"/>
+        </fileset>
+      </classpath>
     </javac>
   </target>
+	
+  <!-- create javadocs -->
+  <target name="reference" depends="compile" description="Create javadocs">
+    <mkdir dir="${docsdir}" />
+    <javadoc destdir="${docsdir}">
+      <fileset dir="${srcdir}" defaultexcludes="yes"/>
+      <classpath>
+        <pathelement path="classpath"/>
+        <fileset dir="lib">
+          <include name="**/*.jar"/>
+        </fileset>
+      </classpath>
+    </javadoc>
+  </target>
+	
 
   <!-- jar classes -->
-  <target name="jar" depends="compile" description="Create jar file">
-    <mkdir dir="${distdir}" />
-    <jar jarfile="${distdir}/MeshToVBO.jar">
-      <fileset dir="${builddir}" />
-    </jar>
+  <target name="library" depends="reference" description="Create jar file">
+    <mkdir dir="${libdir}" />
+    <jar jarfile="${libdir}/MeshToVBO.jar" basedir="${builddir}"/>
+    <copy file="library.properties" todir="${distdir}"/>
+    <copy todir="${distdir}/examples">
+      <fileset dir="examples"/>
+    </copy>
+    <copy todir="${distdir}/reference">
+      <fileset dir="reference"/>
+    </copy>
   </target>
 </project>
